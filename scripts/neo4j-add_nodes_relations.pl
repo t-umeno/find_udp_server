@@ -18,6 +18,7 @@ def main():
     input_super_mediator_file = None
     input_super_mediator = False
     verbose = False
+    flowflag = False
     for o, a in opts:
         if o == "-v":
             verbose = True
@@ -39,7 +40,28 @@ def main():
         f = open(input_super_mediator_file, 'r')
         reader = csv.reader(f, delimiter='|')
         for row in reader:
+            if row[0].startswith('2') or row[0].startswith('1'):
+                flowflag = True
+            else:
+                flowflag = False
+                continue
+
             print row
+            flowStartMilliseconds = row[0].strip()
+            flowEndMilliseconds = row[1].strip()
+            flowDurationMilliseconds = row[2].strip()
+            reverseFlowDeltaMilliseconds =  row[3].strip()
+            protocolIdentifier = row[4].strip()
+            sourceIPv4Address = row[5].strip()
+            sourceTransportPort = row[6].strip()
+            packetTotalCount = row[7].strip()
+            octetTotalCount = row[8].strip()
+            flowAttributes = row[9].strip()
+            sourceMacAddress = row[10].strip()
+            destinationIPv4Address = row[11].strip()
+            destinationTransportPort = row[12].strip()
+            print 'source:%s,%s destination:%s,%s' % (sourceIPv4Address, sourceTransportPort,destinationIPv4Address,destinationTransportPort)
+            
         f.close()
 
     session.close()
