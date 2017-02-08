@@ -32,6 +32,8 @@ def main():
             assert False, "unhandled option"
 
     password = "test"
+    udp_node = {}
+    udp_comm = {}
 
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=basic_auth("neo4j", password))
     session = driver.session()
@@ -46,7 +48,7 @@ def main():
                 flowflag = False
                 continue
 
-            print row
+            #print row
             flowStartMilliseconds = row[0].strip()
             flowEndMilliseconds = row[1].strip()
             flowDurationMilliseconds = row[2].strip()
@@ -77,10 +79,22 @@ def main():
             ipClassOfService = row[27].strip()
             flowEndReason = row[28].strip()
             collectorName = row[29].strip()
-            print 'source:%s,%s destination:%s,%s' % (sourceIPv4Address, sourceTransportPort,destinationIPv4Address,destinationTransportPort)
-            print 'collectorName:%s' % collectorName
+            #print 'source:%s,%s destination:%s,%s' % (sourceIPv4Address, sourceTransportPort,destinationIPv4Address,destinationTransportPort)
+            #print 'collectorName:%s' % collectorName
+            key_src = "%s,%d" % (sourceIPv4Address, int(sourceTransportPort))
+            udp_node[key_src] = "node"
+            key_dst = "%s,%d" % (destinationIPv4Address, int(destinationTransportPort))
+            udp_node[key_dst] = "node"
+
+            key_comm = "%s,%s" % (key_src,key_dst)
+            udp_comm[key_comm] = "comm"
             
         f.close()
+        for k,v in udp_node.items():
+            print k,v
+                    
+        for k,v in udp_comm.items():
+            print k,v
 
     session.close()
 
