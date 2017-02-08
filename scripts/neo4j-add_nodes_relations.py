@@ -92,6 +92,8 @@ def main():
         f.close()
         for k,v in udp_node.items():
             print k,v
+            row = k.split(',')
+            result = session.run("MERGE(a:udp_node{IP:\"%s\",port:%d})" % (row[0],int(row[1])))
                     
         for k,v in udp_comm.items():
             print k,v
