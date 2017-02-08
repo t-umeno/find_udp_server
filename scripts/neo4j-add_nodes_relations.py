@@ -97,6 +97,8 @@ def main():
                     
         for k,v in udp_comm.items():
             print k,v
+            row = k.split(',')
+            result = session.run("MATCH(a:udp_node{IP:\"%s\",port:%d}, (b:udp_node{IP:\"%s\",port:%d} MERGE (a-c:comm->b)" % (row[0],int(row[1]),row[2],int(row[3])))
 
     session.close()
 
