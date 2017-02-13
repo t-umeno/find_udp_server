@@ -5,7 +5,7 @@ import csv
 from neo4j.v1 import GraphDatabase, basic_auth
 
 def usage():
-    print "neo4j-add_nodes_relations [-h] [-v] [-o outputfile]"
+    print "neo4j-add_nodes_relations [-h] [-v] [-i inputfile]"
 
 def main():
     try:
@@ -98,7 +98,12 @@ def main():
         for k,v in udp_comm.items():
             print k,v
             row = k.split(',')
-            result = session.run("MATCH(a:udp_node{IP:\"%s\",port:%d}),(b:udp_node{IP:\"%s\",port:%d}) MERGE ((a)-[c:comm]->(b))" % (row[0],int(row[1]),row[2],int(row[3])))
+            srcport = int(row[1])
+            dstport = int(row[3])
+            result = session.run("MATCH(a:udp_node{IP:\"%s\",port:%d}),(b:udp_node{IP:\"%s\",port:%d}) MERGE ((a)-[c:comm]->(b))" % (row[0],srcport,row[2],dstport))
+            if srcport == dstport:
+                result = session.run("MATCH(a:udp_node{IP:\"%s\",port:%d}) SET a.act=\"server\"" % (row[0],srcport))
+                result = session.run("MATCH(b:udp_node{IP:\"%s\",port:%d}) SET b.act=\"server\"" % (row[2],dstport))
 
     session.close()
 
